@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InkOS 小说集</title>
+<style>
+  :root {
+    --bg: #0f0f14;
+    --card: #1a1a24;
+    --accent: #d4a530;
+    --text: #e0e0e0;
+    --muted: #888;
+    --border: #2a2a3a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Noto Sans SC", "PingFang SC", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .header {
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+  .header p {
+    color: var(--muted);
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+  }
+  .book-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.2s, border-color 0.2s;
+    cursor: pointer;
+  }
+  .book-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+  }
+  .book-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .book-meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+  .book-desc {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #bbb;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .book-tags {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(212, 165, 48, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(212, 165, 48, 0.3);
+  }
+  .empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+  .empty svg { width: 64px; height: 64px; margin-bottom: 1rem; opacity: 0.4; }
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+  }
+  @media (max-width: 600px) {
+    .header { padding: 2rem 1rem 1.5rem; }
+    .header h1 { font-size: 1.5rem; }
+    .container { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📖 InkOS 小说集</h1>
+  <p>AI 生成 · 持续更新</p>
+</div>
+<div class="container">
+  <div id="book-grid" class="book-grid">
+    <div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5v-15A2.5 2.5 0 016.5 2H20v20H6.5a2.5 2.5 0 010-5H20"/></svg>
+      <h2>还没有作品</h2>
+      <p>InkOS 正在创作中，敬请期待...</p>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  由 <a href="https://github.com/Narcooo/inkos" style="color:var(--accent);text-decoration:none;">InkOS</a> 驱动 · <a href="https://github.com/Aprilssky/novels" style="color:var(--muted);text-decoration:none;">GitHub</a>
+</div>
+<script>
+// Books are auto-loaded from books.json
+fetch('books.json').then(r=>r.json()).then(books=>{
+  const grid = document.getElementById('book-grid');
+  if (!books || books.length === 0) return;
+  grid.innerHTML = books.map(b => `
+    <div class="book-card" onclick="location.href='books/${b.slug}/'">
+      <div class="book-title">${b.title}</div>
+      <div class="book-meta">${b.author || 'InkOS'} · ${b.date || ''} · ${b.genre || ''}</div>
+      <div class="book-desc">${b.description || ''}</div>
+      <div class="book-tags">${(b.tags||[]).map(t=>'<span class="tag">'+t+'</span>').join('')}</div>
+    </div>
+  `).join('');
+}).catch(()=>{});
+</script>
+</body>
+</html>
